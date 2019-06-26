@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<iframe src="Hk.mp3" allow="autoplay" style="display:none" id="iframeAudio">
+</iframe>
+<table>
+    <tr>
+        <th><p>Điểm : <samp id="hienthihp"></samp></p></th>
+        <th><p style="margin-left: 100px">hp : <samp id="hienthi"></samp></p></th>
+        <th><input style="margin-left: 200px" type="button" onclick="load()" value="Tạo Bóng"/></th>
+        <th><select name="select1" style="margin-left: 100px">
+            <option>Hướng dẫn chơi game</option>
+            <option>Sang trái : A</option>
+            <option>Sang phải : d</option>
+            <option>Lên trên : W</option>
+            <option>Xuống dưới : S</option>
+            <option>Phóng sét : K</option>
+            <option>win khi bóng = 0</option>
+        </select>
+        </th>
+    </tr>
+</table>
+<canvas id="a" width="" height="" style=" border: 2px solid deepskyblue "></canvas>
+
+<script>
+    let c = document.getElementById("a");
+    c.width = window.innerWidth - 60;
+    c.height = window.innerHeight - 70;
+    let ctx = c.getContext("2d");
+
+    function getRandomHex() {
+        return Math.floor(Math.random() * 265);
+    }
+
+    function getRandomColor() {
+        var red = getRandomHex();
+        var green = getRandomHex();
+        var blue = getRandomHex();
+        return "rgb(" + red + "," + blue + "," + green + ")";
+    }
+
+    let quaBong = function (x, y, radius, tocDox, tocDoy) {
+        this.x = x;
+        this.y = y;
+        this.tocDox = tocDox;
+        this.tocDoy = tocDoy;
+        this.r = radius;
+
+        this.setx = function (x) {
+            this.x = x;
+        };
+        this.sety = function (y) {
+            this.y = y;
+        };
+        this.setradius = function (radius) {
+            this.r = radius;
+        };
+        this.getx = function () {
+            return this.x
+        };
+        this.gety = function () {
+            return this.y;
+        };
+        this.getradius = function () {
+            return this.r;
+        };
+        this.setspeedx = function (tocDox) {
+            this.tocDox = tocDox
+        };
+        this.setspeedy = function (tocDoy) {
+            this.tocDoy = tocDoy
+        };
+        this.getspeedx = function () {
+            return this.tocDox;
+        };
+        this.getspeedy = function () {
+            return this.tocDoy;
+        };
+        this.diChuyen = function () {
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+            ctx.fillStyle = getRandomColor();
+            ctx.fill();
+            ctx.closePath();
+        };
+        this.chamBien = function () {
+            if (this.x < this.r || this.x > c.width - this.r) {
+                this.setspeedx(-this.getspeedx());
+            } else if (this.y < this.r || this.y > c.height - this.r) {
+                this.setspeedy(-this.getspeedy());
+            }
+            this.x += this.getspeedx();
+            this.y += this.getspeedy();
+        }
+    };
+    let Dan = function (toaDoa, toaDob) {
+        this.toadoa = toaDoa;
+        this.toadob = toaDob;
+        this.anhdan = new Image();
+        this.daquabien = false;
+        this.settoadoa = function (toaDoa) {
+            this.toadoa = toaDoa
+        };
+        this.settoadob = function (toaDob) {
+            this.toadob = toaDob
+        };
+        this.gettoadoa = function () {
+            return this.toadoa
+        };
+        this.gettoadob = function () {
+            return this.toadob
+        };
+        this.veDan = function () {
+            if (!this.daquabien) {
+                ctx.beginPath();
+                this.anhdan.src = "562.png";
+                ctx.drawImage(this.anhdan, this.toadoa, this.toadob);
+                ctx.closePath();
+            }
+        };
+        this.bandan = function () {
+            this.veDan();
+            if (this.toadoa < -100) {
+                this.daquabien = true;
+            }
+            this.toadoa -= 40
+        };
+    };
+    let hinhtron = [];
+    let pikachu = function vepikachu(toaDo1, toaDo2) {
+        this.toaDo1 = toaDo1;
+        this.toaDo2 = toaDo2;
+        this.tocdo = 30;
+        this.img = new Image();
+        this.settoado1 = function (toaDo1) {
+            this.toaDo1 = toaDo1
+        };
+        this.settoado2 = function (toaDo2) {
+            this.toaDo2 = toaDo2
+        };
+        this.gettoado1 = function () {
+            return this.toaDo1
+        };
+        this.gettoado2 = function () {
+            return this.toaDo2
+        };
+        this.vepikachu = function () {
+            ctx.beginPath();
+            this.img.src = "pikachu1.png";
+            ctx.drawImage(this.img, this.toaDo1, this.toaDo2);
+            ctx.closePath()
+        };
+        this.sangTrai = function () {
+            if (this.toaDo1 <= 10) {
+                return;
+            }
+            this.toaDo1 -= this.tocdo;
+
+        };
+        this.sangphai = function () {
+            if (this.toaDo1 >= c.width - 60) {
+                return;
+            }
+            this.toaDo1 += this.tocdo;
+        };
+        this.lentren = function () {
+            if (this.toaDo2 <= 10) {
+                return;
+            }
+            this.toaDo2 -= this.tocdo;
+        };
+        this.xuongduoi = function () {
+            if (this.toaDo2 >= c.height - 60) {
+                return;
+            }
+            this.toaDo2 += this.tocdo;
+        };
+    };
+
+    let pika = new pikachu(1000, 250);
+    let pikachuphongdien = new Dan(pika.gettoado1(), pika.gettoado2());
+
+    function anhnen() {
+        let anh = new Image();
+        ctx.beginPath();
+        anh.src = "galaxy-space.jpg";
+        ctx.drawImage(anh, 0, 0);
+        ctx.closePath();
+    }
+
+    function tiengDan() {
+        let nhac = new Audio("a.mp3");
+        nhac.play();
+    }
+
+    function dichuyenpikachu(evt) {
+        switch (evt.keyCode) {
+            case 87:
+                pika.lentren();
+                break;
+            case 83:
+                pika.xuongduoi();
+                break;
+            case 65:
+                pika.sangTrai();
+                break;
+            case 68:
+                pika.sangphai();
+                break;
+            case 75:
+                if (pikachuphongdien.daquabien) {
+                    tiengDan();
+                    pikachuphongdien.settoadoa(pika.gettoado1());
+                    pikachuphongdien.settoadob(pika.gettoado2());
+                    pikachuphongdien.daquabien = false
+                }
+                break;
+            default:
+        }
+    }
+
+    let hp = 100;
+
+    function sulyvacham() {
+        for (var i = 0; i < hinhtron.length; i++) {
+            if (hinhtron[i].getx() + hinhtron[i].getradius() > pika.gettoado1() && hinhtron[i].getx() - hinhtron[i].getradius() < pika.gettoado1() + 40
+                && hinhtron[i].gety() + hinhtron[i].getradius() > pika.gettoado2() && hinhtron[i].gety() - hinhtron[i].getradius() < pika.gettoado2() + 30) {
+                hp--;
+            }
+        }
+        return hp
+    }
+
+    let diem = 0;
+
+    function suLyDan() {
+        for (var i = 0; i < hinhtron.length; i++) {
+            if (pikachuphongdien.gettoadob() + 25 > hinhtron[i].gety() + hinhtron[i].getradius()
+                && pikachuphongdien.gettoadob() - 25 < hinhtron[i].gety() - hinhtron[i].getradius()
+                && pikachuphongdien.gettoadoa() < hinhtron[i].getx()) {
+                for (let j = i; j < hinhtron.length - 1; j++) {
+                    var temp = hinhtron[i];
+                    hinhtron[i] = hinhtron[i + 1];
+                    hinhtron[i + 1] = temp;
+                }
+                hinhtron.pop();
+                pikachuphongdien.settoadob(+3000);
+                diem++
+            }
+        }
+        return diem
+    }
+let lvl =1;
+    function run() {
+        if (hinhtron.length !== 0) {
+            {
+                ctx.clearRect(0, 0, c.width, c.height);
+                anhnen();
+                for (var i = 0; i < hinhtron.length; i++) {
+                    hinhtron[i].diChuyen();
+                    hinhtron[i].chamBien();
+                }
+                document.getElementById("hienthi").innerHTML = hp;
+                document.getElementById("hienthihp").innerHTML = hinhtron.length;
+                if (hp <= 0) {
+                    alert("Game Over");
+                    hp = 100;
+                }
+                pikachuphongdien.bandan();
+                pika.vepikachu();
+                sulyvacham();
+                suLyDan();
+
+                requestAnimationFrame(run);
+            }
+
+        } else {
+            alert("You Win lever up");
+            lvl++;
+            load(lvl);
+        }
+    }
+
+    function load(lvl) {
+        window.addEventListener('keydown', dichuyenpikachu);
+        for (var i = 0; i < lvl; i++) {
+            hinhtron.push(new quaBong(20, Math.ceil(Math.random() * 400 + 50), Math.ceil(Math.random() * 10 + 10), Math.ceil(Math.random() * 10), Math.ceil(Math.random() * 10)));
+        }
+        run();
+    }
+
+</script>
+</body>
+</html>
