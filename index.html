@@ -10,9 +10,9 @@
 </iframe>
 <table>
     <tr>
-        <th><p>Số Bóng Trên Sân : <samp id="hienthihp"></samp></p></th>
+        <th><p>Điểm : <samp id="hienthihp"></samp></p></th>
         <th><p style="margin-left: 100px">hp : <samp id="hienthi"></samp></p></th>
-        <th><input style="margin-left: 200px" type="button" onclick="load()" value="Star Game"/></th>
+        <th><input style="margin-left: 200px" type="button" onclick="load()" value="Tạo Bóng"/></th>
         <th><select name="select1" style="margin-left: 100px">
             <option>Hướng dẫn chơi game</option>
             <option>Sang trái : A</option>
@@ -25,11 +25,10 @@
         </th>
     </tr>
 </table>
-<canvas id="a" width="1200px" height="500" style=" border: 2px solid deepskyblue "></canvas>
+<canvas id="a" width="1200" height="500" style=" border: 2px solid deepskyblue "></canvas>
 
 <script>
     let c = document.getElementById("a");
-   
     let ctx = c.getContext("2d");
 
     function getRandomHex() {
@@ -279,8 +278,8 @@ let lvl =5;
             }
 
         } else {
-            alert("You Win lever up");
-            lvl++;
+            alert("Bạn có muốn tạo thêm bóng ");
+            lvl+=2;
             load(lvl);
         }
     }
